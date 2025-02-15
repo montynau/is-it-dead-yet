@@ -2,7 +2,7 @@
 
 A humorous, lightweight service status dashboard that answers the eternal question: "Is it dead yet?" 🤔
 
-![Dashboard Preview](preview.png)
+![Dashboard Preview](/docs/assets/look1.png)
 
 ## Features
 
@@ -97,7 +97,7 @@ Contributions are welcome! Feel free to:
 
 ## Author
 
-Montynau - [Montynau](https://github.com/montynau)
+[Montynau](https://github.com/montynau)
 
 ---
 
