@@ -2,7 +2,7 @@
 
 A humorous, lightweight service status dashboard that answers the eternal question: "Is it dead yet?" 🤔
 
-![Dashboard Preview](/docs/assets/look1.png)
+![Dashboard Preview](/docs/assets/look.png)
 
 ## Features
 
