@@ -1,0 +1,21 @@
+services:
+  is-it-dead-yet:
+    # Name of the container
+    container_name: is-it-dead-yet
+    # Specify the image name
+    image: is-it-dead-yet:latest
+    # Build the Docker image from the current directory
+    build: .
+    # Map port 8080 of the host to port 8080 of the container
+    ports:
+      - "8080:8080"
+    # Mount local files to the container
+    volumes:
+      - ./config.json:/app/config.json
+      - ./template.html:/app/template.html
+      - ./style.css:/app/style.css
+    # Restart the container unless it is explicitly stopped
+    restart: unless-stopped
+    # Add a label to enable Watchtower for automatic updates
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"

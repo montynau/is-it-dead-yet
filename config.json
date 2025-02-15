@@ -1,0 +1,9 @@
+{
+  "services": [
+    {
+      "name": "Is it dead yet?",
+      "url": "http://localhost:8080",
+      "icon": "go"
+    }
+  ]
+}

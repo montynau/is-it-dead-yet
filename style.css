@@ -1,0 +1,295 @@
+/* Light theme variables */
+:root[data-theme="light"] {
+  --bg-color: #f0f2f5;
+  --text-color: #1a73e8;
+  --card-bg: white;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --button-bg: rgba(250, 250, 250, 0.5);
+  --button-hover-bg: rgba(255, 255, 255, 0.8);
+  --button-text: #444;
+  --button-shadow: rgba(0, 0, 0, 0.05);
+  --border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark theme variables */
+:root[data-theme="dark"] {
+  --bg-color: #1a1a1a;
+  --text-color: #ffffff;
+  --card-bg: #2d2d2d;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --button-bg: rgba(30, 30, 30, 0.8);
+  --button-hover-bg: rgba(40, 40, 40, 0.9);
+  --button-text: white;
+  --button-shadow: rgba(0, 0, 0, 0.3);
+  --border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* General body styles */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  background-color: var(--bg-color);
+  transition: background-color 0.3s ease;
+}
+
+/* Header styles */
+h1 {
+  color: var(--text-color);
+  margin: 40px 0;
+  font-size: 32px;
+}
+
+/* Theme switch button styles */
+.theme-switch {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+}
+
+/* Theme button styles */
+.theme-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--card-bg);
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color);
+  box-shadow: 0 2px 4px var(--shadow-color);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  font-size: 20px;
+}
+
+.theme-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+/* Dashboard styles */
+.dashboard {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+}
+
+/* Card styles */
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Button grid styles */
+.button-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Button styles */
+.button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  text-decoration: none;
+  padding: 20px;
+  border-radius: 12px;
+  gap: 12px;
+  width: 120px;
+  height: 120px;
+  box-sizing: border-box;
+  transform: scale(1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out,
+    background-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+  border: 1px solid var(--border-color);
+}
+
+.button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #ea4335;
+  transition: background-color 0.3s ease;
+}
+
+.button-up::before {
+  background: #34a853;
+}
+
+.button img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px var(--button-shadow);
+  background-color: var(--button-hover-bg);
+}
+
+/* Light theme specific button images */
+html[data-theme="light"] .button[data-name="Jellyfin"] img {
+  content: url("https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/jellyfin.svg");
+}
+
+html[data-theme="light"] .button[data-name="TrueNAS"] img {
+  content: url("https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/truenas.svg");
+}
+
+html[data-theme="light"] .button[data-name="Jellyseerr"] img {
+  content: url("https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/jellyseerr.svg");
+}
+
+/* Dark theme specific button images */
+html[data-theme="dark"] .button img {
+  filter: none;
+}
+
+/* Responsive styles for button grid */
+@media (max-width: 700px) {
+  .button-grid {
+    grid-template-columns: repeat(auto-fit, 120px);
+  }
+}
+
+/* Alert styles */
+.alerts {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 30px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.alert {
+  background-color: rgba(244, 67, 54, 0.1);
+  border-left: 4px solid #f44336;
+  padding: 12px 20px;
+  margin: 10px 0;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.alert-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.alert i {
+  color: #f44336;
+}
+
+.alert-text {
+  color: var(--button-text);
+  font-weight: 500;
+}
+
+.alert-time {
+  color: var(--button-text);
+  opacity: 0.7;
+  margin-left: 8px;
+}
+
+/* Pulse animation for alerts */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* New JavaScript controlled class style */
+.alert-scaled {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
+/* Button styles for up and down states */
+.button-up {
+  border-top: 3px solid #4caf50 !important;
+}
+
+.button-down {
+  border-top: 3px solid #f44336 !important;
+}
+
+.alert-since {
+  color: var(--button-text);
+  opacity: 0.7;
+  font-size: 0.9em;
+  margin-left: 8px;
+}
+
+/* TODO: Footer styles (commented out becouse not working, just added style to template. Good to fix this soon) */
+/*
+.footer {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-color);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-color);
+  border-top: 1px solid var(--border-color);
+  font-size: 0.9em;
+}
+
+.footer a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.footer-joke {
+  font-size: 0.9em;
+  opacity: 0.8;
+  margin-top: 5px;
+  font-style: italic;
+}
+*/

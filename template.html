@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html data-theme="light">
+  <head>
+    <title>Is It Dead Yet?</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Theme toggle button -->
+    <button id="themeToggle" class="theme-button">
+      <i class="fas fa-moon"></i>
+    </button>
+
+    <h1>Is It Dead Yet?</h1>
+    <div id="alerts" class="alerts"></div>
+
+    <div class="dashboard">
+      <div class="button-grid">
+        {{range .Services}}
+        <a
+          href="{{.URL}}"
+          class="button"
+          data-url="{{.URL}}"
+          data-name="{{.Name}}"
+          target="_blank"
+        >
+          <img
+            src="https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/{{.Icon}}.svg"
+            alt="{{.Name}}"
+          />
+          {{.Name}}
+        </a>
+        {{end}}
+      </div>
+    </div>
+
+    <script>
+      // Set theme from localStorage
+      const savedTheme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      const moonIcon = document.querySelector(".theme-button i");
+      if (savedTheme === "dark") {
+        moonIcon.classList.remove("fa-moon");
+        moonIcon.classList.add("fa-sun");
+      }
+
+      function formatDowntime(startTime) {
+        const now = new Date();
+        const diff = Math.floor((now - startTime) / 1000);
+
+        const hours = Math.floor(diff / 3600);
+        const minutes = Math.floor((diff % 3600) / 60);
+        const seconds = diff % 60;
+
+        function formatNumber(num, one, few, many) {
+          if (num > 9 && num < 21) return `${num} ${many}`;
+          const lastDigit = num % 10;
+          if (lastDigit === 1) return `${num} ${one}`;
+          if (lastDigit > 1 && lastDigit < 10) return `${num} ${few}`;
+          return `${num} ${many}`;
+        }
+
+        function formatHours(h) {
+          return formatNumber(h, "hour", "hours", "hours");
+        }
+
+        function formatMinutes(m, withHours = false) {
+          if (withHours) {
+            if (m === 1) return "1 minute";
+            return `${m} minutes`;
+          }
+          return formatNumber(m, "minute", "minutes", "minutes");
+        }
+
+        function formatSeconds(s) {
+          return formatNumber(s, "second", "seconds", "seconds");
+        }
+
+        if (hours > 0) {
+          return `${formatHours(hours)} ${formatMinutes(minutes, true)}`;
+        } else if (minutes > 0) {
+          return formatMinutes(minutes);
+        } else {
+          return formatSeconds(seconds);
+        }
+      }
+
+      function formatDate(date) {
+        const pad = (n) => (n < 10 ? "0" + n : n);
+
+        const year = date.getFullYear();
+        const month = pad(date.getMonth() + 1);
+        const day = pad(date.getDate());
+        const hours = pad(date.getHours());
+        const minutes = pad(date.getMinutes());
+
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+      }
+
+      const UPDATE_INTERVAL = 10000;
+
+      async function updateStatus() {
+        try {
+          const response = await fetch("/status");
+          const data = await response.json();
+
+          // Update button statuses and alerts simultaneously
+          const alertsContainer = document.getElementById("alerts");
+          alertsContainer.innerHTML = "";
+
+          // First update statuses
+          if (data.services) {
+            data.services.forEach((service) => {
+              const button = document.querySelector(
+                `a[data-url="${service.url}"]`
+              );
+              if (button) {
+                const newStatus = service.isUp ? "button-up" : "button-down";
+                if (!button.classList.contains(newStatus)) {
+                  button.classList.remove("button-up", "button-down");
+                  button.classList.add(newStatus);
+                }
+              }
+            });
+          }
+
+          // Then immediately update alerts
+          if (data.downtimes) {
+            Object.entries(data.downtimes).forEach(([url, status]) => {
+              if (status.isDown) {
+                const serviceName =
+                  data.services.find((s) => s.url === url)?.name || url;
+                const startTime = new Date(status.startTime);
+                const alert = document.createElement("div");
+                alert.className = "alert pulse";
+                alert.innerHTML = `
+                  <div class="alert-content">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span class="alert-text">
+                      ${serviceName} is down for ${formatDowntime(startTime)}
+                      <span class="alert-since">(down since ${formatDate(
+                        startTime
+                      )})</span>
+                    </span>
+                  </div>
+                `;
+                alertsContainer.appendChild(alert);
+              }
+            });
+          }
+        } catch (error) {
+          console.error("Critical error:", error);
+        }
+      }
+
+      // Immediately check status
+      updateStatus();
+
+      // Check at precise intervals
+      setInterval(updateStatus, UPDATE_INTERVAL);
+
+      // Theme toggle with saving
+      const themeToggle = document.getElementById("themeToggle");
+      const htmlElement = document.documentElement;
+
+      themeToggle.addEventListener("click", () => {
+        const currentTheme = htmlElement.getAttribute("data-theme");
+        const newTheme = currentTheme === "light" ? "dark" : "light";
+
+        htmlElement.setAttribute("data-theme", newTheme);
+        localStorage.setItem("theme", newTheme);
+
+        const moonIcon = themeToggle.querySelector("i");
+        if (newTheme === "dark") {
+          moonIcon.classList.remove("fa-moon");
+          moonIcon.classList.add("fa-sun");
+        } else {
+          moonIcon.classList.remove("fa-sun");
+          moonIcon.classList.add("fa-moon");
+        }
+      });
+    </script>
+    <footer
+      style="
+        text-align: center;
+        padding: 20px;
+        color: var(--text-color);
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--bg-color);
+        border-top: 1px solid var(--border-color);
+        font-size: 0.9em;
+      "
+    >
+      Made with ❤️ by
+      <a
+        href="https://github.com/Montynau"
+        target="_blank"
+        style="
+          color: var(--text-color);
+          text-decoration: none;
+          font-weight: bold;
+        "
+        onmouseover="this.style.textDecoration = 'underline'"
+        onmouseout="this.style.textDecoration = 'none'"
+        >Montynau</a
+      >
+      <span
+        style="
+          font-size: 0.9em;
+          opacity: 0.8;
+          margin-top: 5px;
+          font-style: italic;
+        "
+      >
+        © 2025 | Because manually checking if it's dead is so 2024
+      </span>
+    </footer>
+  </body>
+</html>
